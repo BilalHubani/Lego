@@ -46,7 +46,7 @@ public class downloadInfo extends AsyncTask<Void, String, Boolean> {
     @Override protected Boolean doInBackground(Void... params) {
         int count;
         try {
-            URL url = new URL("https://rebrickable.com/api/v3/lego/colors/?key=62fb8715af2c04f5d9a3d69bdde21e65");
+            URL url = new URL("https://rebrickable.com/api/v3/lego/sets/?key=62fb8715af2c04f5d9a3d69bdde21e65");
             URLConnection connection = url.openConnection();
             connection.connect();
             int lengthOfFile = connection.getContentLength();

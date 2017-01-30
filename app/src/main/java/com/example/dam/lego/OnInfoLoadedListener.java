@@ -5,5 +5,5 @@ package com.example.dam.lego;
  */
 
 public interface OnInfoLoadedListener {
-    public void onInfoLoaded(Boolean ok);
+    public void onInfoLoaded(boolean ok);
 }

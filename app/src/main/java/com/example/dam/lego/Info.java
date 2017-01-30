@@ -15,48 +15,29 @@ import java.util.ArrayList;
  */
 
 public class Info {
-    private String name;
-    private Image image;
-    private int count;
-    private String description;
+    private String time;
+    private ArrayList<Information> infos;
+    public class Information {
+        String set_num;
+        String name;
+        int year;
+        int theme_id;
+        int num_parts;
+        String set_img_url;
+    }
 
     public Info() {
+        time = null;
+        infos = new ArrayList<Information>();
     }
-
-    public String getName() {
-        return name;
+    public Information getInformation(String info){
+        for (Information i: infos){
+            if (i.name.equals(infos))return i;
+        }
+        return null;
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Image getImage() {
-        return image;
-    }
-
-    public void setImage(Image image) {
-        this.image = image;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-    private String time;
-    private ArrayList<Info> infos;
-
+    public ArrayList<Information> getInfos() { return this.infos; }
+    public String getTime() { return time; }
     public boolean loadFromFile(Context context) {
         BufferedReader reader = null;
         try {
@@ -70,11 +51,11 @@ public class Info {
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(":");
                 if (parts.length != 2) continue;
-                Info c = new Info();
-                c.description = parts[0];
-                c.count = Integer.parseInt(parts[1]);
+                Information c = new Information();
+                c.set_num = parts[0];
+                c.num_parts = Integer.parseInt(parts[1]);
                 int resId = context.getResources().getIdentifier(
-                        c.description, "string", context.getPackageName());
+                        c.name, "string", context.getPackageName());
                 c.name = context.getResources().getString(resId);
                 infos.add(c);
             }
