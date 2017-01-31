@@ -7,15 +7,17 @@ import android.database.MatrixCursor;
  */
 
 public class infoCursor extends MatrixCursor {
-    public static final String[] COLNAMES = { "set_num", "name", "num_parts" };
+    public static final String[] COLNAMES = { "_id","set_num", "name", "num_parts" };
 
     public infoCursor(Info info) {
         super(COLNAMES);
-        for (Info.Information c : info.getInfos()) {
-            String[] row = new String[3];
-            row[0] = c.set_num;
-            row[1] = c.name;
-            row[2] = String.valueOf(c.num_parts);
+        int n =0;
+        for (Info.Information c : info.getInfo()) {
+            String[] row = new String[4];
+            row[0] = String.valueOf(++n);
+            row[1] = c.set_num;
+            row[2] = c.name;
+            row[3] = String.valueOf(c.num_parts);
             this.addRow(row);
         }
     }

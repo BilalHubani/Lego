@@ -19,12 +19,13 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 Info info;
+    downloadInfo di = new downloadInfo(this);
     Spinner spinner;
     public class Product extends HashMap<String, Object> {
-        public Product(String name, int count, String description) {
+        public Product(String name, String set_nums, String num_parts) {
             this.put("name", name);
-            this.put("count", count);
-            this.put("description", description);
+            this.put("count", set_nums);
+            this.put("description", num_parts);
         }
     }
 
@@ -33,61 +34,20 @@ Info info;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         spinner = (Spinner)findViewById(R.id.spinner);
-        updateList();
-        updateSpinners();
+        init();
+        downloadInfo();
     }
     public void init() {
         info = new Info();
-        boolean loaded = info.loadFromFile(this);
-        Log.d("flx", "Loaded: " + loaded);
-        if (!loaded) downloadInfo();
-        else {
-
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-            Calendar c = Calendar.getInstance();
-            String now = sdf.format(c.getTime());
-            c.add(Calendar.DATE, -1);
-            String yesterday = sdf.format(c.getTime());
-            boolean valid = now.equals(info.getTime()) || yesterday.equals(info.getTime());
-            if (!valid) askForDownload();
-            else updateSpinners();
-        }
     }
-    public void askForDownload() {
 
-        if (info != null) {
-            if (info.getTime() != null) {
-                String title = "Update bricks?";
-                String btnOk = "Yes";
-                String btnNo = "No";
-                new AlertDialog.Builder(this).setTitle(title)
-                        .setPositiveButton(btnOk, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                MainActivity.this.downloadInfo();
-                            }
-                        })
-                        .setNegativeButton(btnNo, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                MainActivity.this.init();
-                            }
-                        })
-                        .show();
-                return;
-            }
-        }
-        String title = "Download failed";
-        new AlertDialog.Builder(this).setTitle(title).show();
-    }
     public void downloadInfo() {
-        downloadInfo di = new downloadInfo(this);
+
         di.setOnInfoLoadedListener(new OnInfoLoadedListener() {
             @Override
             public void onInfoLoaded(boolean ok) {
-                Log.d("flx", "Download result: " + ok);
-                if (ok) init();
-                else askForDownload();
+                updateSpinners();
+                updateList();
             }
         });
         di.execute();
@@ -107,11 +67,7 @@ Info info;
     }
     public void updateList(){
         ListView llista4 = (ListView) findViewById(R.id.listView);
-
         List<Product> dades = new ArrayList<>();
-        dades.add(new Product("Name1", 7, "shit"));
-        dades.add(new Product("Name2", 9, "moar shit"));
-
         SimpleAdapter adapter = new SimpleAdapter(
                 MainActivity.this,
                 dades,

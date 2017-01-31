@@ -36,7 +36,7 @@ public class Info {
         }
         return null;
     }
-    public ArrayList<Information> getInfos() { return this.infos; }
+    public ArrayList<Information> getInfo() { return this.infos; }
     public String getTime() { return time; }
     public boolean loadFromFile(Context context) {
         BufferedReader reader = null;

@@ -1,9 +1,11 @@
 package com.example.dam.lego;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.EditText;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -29,6 +31,7 @@ public class downloadInfo extends AsyncTask<Void, String, Boolean> {
         this.listener = listener;
     }
     private ProgressDialog pDialog;
+    public String xml;
 
     @Override protected void onPreExecute() {
         pDialog = new ProgressDialog(context);
@@ -43,12 +46,18 @@ public class downloadInfo extends AsyncTask<Void, String, Boolean> {
         pDialog.setCancelable(true);
         pDialog.show();
     }
+
+    public String getXml() {
+        return xml;
+    }
+
     @Override protected Boolean doInBackground(Void... params) {
         int count;
         try {
             URL url = new URL("https://rebrickable.com/api/v3/lego/sets/?key=62fb8715af2c04f5d9a3d69bdde21e65");
             URLConnection connection = url.openConnection();
             connection.connect();
+            pDialog.setMessage("bla bla bla");
             int lengthOfFile = connection.getContentLength();
             pDialog.setMax(lengthOfFile);
             InputStream input = new BufferedInputStream(url.openStream(), 8192);
@@ -62,32 +71,21 @@ public class downloadInfo extends AsyncTask<Void, String, Boolean> {
             }
             input.close();
             output.flush();
-            String xml = new String(output.toByteArray());
-            File dir = context.getExternalFilesDir(null);
-            if (dir == null) return false;
-            File f = new File(dir, "lego.csv");
-            f.delete();
-            PrintWriter wr = new PrintWriter(f);
-            Pattern pattern = Pattern.compile(".*<Cube time='(.*)'.*");
-            Matcher matcher = pattern.matcher(xml);
-            if (!matcher.find()) return false;
-            String time = matcher.group(1);
-            wr.println(time);
-            wr.println("EUR:1.0000");
-            pattern = Pattern.compile(".*<Cube currency='(.*)' rate='(.*)'.*");
-            matcher = pattern.matcher(xml);
-            while (matcher.find()) {
-                String currency = matcher.group(1);
-                String rate = matcher.group(2);
-                wr.println(currency + ":" + rate);
-            }
-            wr.flush();
-            wr.close();
+            xml = new String(output.toByteArray());
+
         } catch (Exception e) {
             Log.e("Error: ", e.getMessage());
             return false;
         }
 
         return true;
+    }
+    protected void onProgressUpdate(String... progress) {
+        pDialog.setProgress(Integer.parseInt(progress[0]));
+    }
+
+    @Override public void onPostExecute(Boolean result) {
+        pDialog.dismiss();
+        if (listener != null) listener.onInfoLoaded(result);
     }
 }
