@@ -19,7 +19,7 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 Info info;
-    downloadInfo di = new downloadInfo(this);
+
     Spinner spinner;
     public class Product extends HashMap<String, Object> {
         public Product(String name, String set_nums, String num_parts) {
@@ -42,7 +42,7 @@ Info info;
     }
 
     public void downloadInfo() {
-
+        downloadInfo di = new downloadInfo(this);
         di.setOnInfoLoadedListener(new OnInfoLoadedListener() {
             @Override
             public void onInfoLoaded(boolean ok) {
