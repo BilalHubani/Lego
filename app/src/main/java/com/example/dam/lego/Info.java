@@ -1,100 +1,127 @@
 package com.example.dam.lego;
 
-import android.content.Context;
-import android.media.Image;
-import android.util.Log;
-
-import org.xml.sax.XMLReader;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-
 /**
- * Created by dam on 30/1/17.
+ * Created by dam on 2/2/17.
  */
 
 public class Info {
-    private String time;
-    private ArrayList<Information> infos;
-    String set_num;
-    String name;
-    int year;
-    String theme_id;
-    int num_parts;
-    String set_img_url;
-    public class Information {
-        String set_num;
-        String name;
-        int year;
-        int theme_id;
-        int num_parts;
-        String set_img_url;
-    }
+    private String part_id;
+    private String qty;
+    private String ldraw_color_id;
+    private String type;
+    private String part_name;
+    private String color_name;
+    private String part_img_url;
+    private String element_id;
+    private String element_img_url;
+    private String rb_color_id;
+    private String part_type_id;
 
     public Info() {
-        time = null;
-        infos = new ArrayList<Information>();
     }
 
-    public String getSet_num() {
-        return set_num;
+    public String getPart_id() {
+        return part_id;
     }
 
-    public void setSet_num(String set_num) {
-        this.set_num = set_num;
+    public void setPart_id(String part_id) {
+        this.part_id = part_id;
     }
 
-    public String getName() {
-        return name;
+    public String getQty() {
+        return qty;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setQty(String qty) {
+        this.qty = qty;
     }
 
-    public int getYear() {
-        return year;
+    public String getLdraw_color_id() {
+        return ldraw_color_id;
     }
 
-    public void setYear(int year) {
-        this.year = year;
+    public void setLdraw_color_id(String ldraw_color_id) {
+        this.ldraw_color_id = ldraw_color_id;
     }
 
-    public String getTheme_id() {
-        return theme_id;
+    public String getType() {
+        return type;
     }
 
-    public void setTheme_id(String theme_id) {
-        this.theme_id = theme_id;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public int getNum_parts() {
-        return num_parts;
+    public String getPart_name() {
+        return part_name;
     }
 
-    public void setNum_parts(int num_parts) {
-        this.num_parts = num_parts;
+    public void setPart_name(String part_name) {
+        this.part_name = part_name;
     }
 
-    public String getSet_img_url() {
-        return set_img_url;
+    public String getColor_name() {
+        return color_name;
     }
 
-    public void setSet_img_url(String set_img_url) {
-        this.set_img_url = set_img_url;
+    public void setColor_name(String color_name) {
+        this.color_name = color_name;
     }
 
-    public Information getInformation(String info){
-        for (Information i: infos){
-            if (i.name.equals(infos))return i;
-        }
-        return null;
+    public String getPart_img_url() {
+        return part_img_url;
     }
-    public ArrayList<Information> getInfo() { return this.infos; }
-    public String getTime() { return time; }
 
+    public void setPart_img_url(String part_img_url) {
+        this.part_img_url = part_img_url;
+    }
+
+    public String getElement_id() {
+        return element_id;
+    }
+
+    public void setElement_id(String element_id) {
+        this.element_id = element_id;
+    }
+
+    public String getElement_img_url() {
+        return element_img_url;
+    }
+
+    public void setElement_img_url(String element_img_url) {
+        this.element_img_url = element_img_url;
+    }
+
+    public String getRb_color_id() {
+        return rb_color_id;
+    }
+
+    public void setRb_color_id(String rb_color_id) {
+        this.rb_color_id = rb_color_id;
+    }
+
+    public String getPart_type_id() {
+        return part_type_id;
+    }
+
+    public void setPart_type_id(String part_type_id) {
+        this.part_type_id = part_type_id;
+    }
+
+    @Override
+    public String toString() {
+        return "Info{" +
+                "part_id='" + part_id + '\'' +
+                ", qty='" + qty + '\'' +
+                ", ldraw_color_id='" + ldraw_color_id + '\'' +
+                ", type='" + type + '\'' +
+                ", part_name='" + part_name + '\'' +
+                ", color_name='" + color_name + '\'' +
+                ", part_img_url='" + part_img_url + '\'' +
+                ", element_id='" + element_id + '\'' +
+                ", element_img_url='" + element_img_url + '\'' +
+                ", rb_color_id='" + rb_color_id + '\'' +
+                ", part_type_id='" + part_type_id + '\'' +
+                '}';
+    }
 }

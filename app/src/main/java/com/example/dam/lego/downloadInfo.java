@@ -1,23 +1,13 @@
 package com.example.dam.lego;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
@@ -25,17 +15,16 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by dam on 30/1/17.
  */
 
-public class downloadInfo extends AsyncTask<Void, String, Boolean> {
+public class downloadInfo extends AsyncTask<Void, String, String> {
     private Context context;
-    public downloadInfo(Context context){
+    public downloadInfo(Context context, String set){
         this.context = context;
+        this.set = set;
     }
     private OnInfoLoadedListener listener = null;
     public void setOnInfoLoadedListener(OnInfoLoadedListener listener){
@@ -43,14 +32,14 @@ public class downloadInfo extends AsyncTask<Void, String, Boolean> {
     }
     private ProgressDialog pDialog;
     private String xml;
-    private XmlPullParserFactory xmlFactoryObject;
-    public volatile boolean parsingComplete = true;
+    private String set;
+    private List<Info> listaInfo = new ArrayList<>();
     @Override protected void onPreExecute() {
         pDialog = new ProgressDialog(context);
         pDialog.setMessage("Downloading file. Please wait...");
         pDialog.setIndeterminate(false);
         pDialog.setMax(100);
-        pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         pDialog.setCancelable(true);
         pDialog.setTitle("Loading...");
         String msg = "Updating info...";
@@ -59,38 +48,30 @@ public class downloadInfo extends AsyncTask<Void, String, Boolean> {
         pDialog.show();
     }
 
-    public String getXml() {
-        return xml;
-    }
 
-
-    @Override protected Boolean doInBackground(Void... params) {
+    @Override protected String doInBackground(Void... params) {
         int count;
         BufferedReader reader = null;
         try {
-            URL url = new URL("http://stucom.flx.cat/lego/get_set_parts.php?set=60115-1&key=62fb8715af2c04f5d9a3d69bdde21e65");
+            URL url = new URL("http://stucom.flx.cat/lego/get_set_parts.php?set="+ set+ "&key=62fb8715af2c04f5d9a3d69bdde21e65");
             URLConnection connection = url.openConnection();
             connection.connect();
             int lengthOfFile = connection.getContentLength();
             Log.e("funciona", "hasta aqui");
+            pDialog.setMax(lengthOfFile);
             InputStream input = new BufferedInputStream(url.openStream(), 8192);
-            xmlFactoryObject = XmlPullParserFactory.newInstance();
-            XmlPullParser myparser = xmlFactoryObject.newPullParser();
-            myparser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-            myparser.setInput(input, null);
-            Log.d("Tag Name", "Before cal");
-
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             byte data[] = new byte[1024];
             long total = 0;
             while ((count = input.read(data)) != -1) {
                 total += count;
+                publishProgress("" + (int) ((total * 100) / lengthOfFile));
                 output.write(data, 0, count);
             }
             input.close();
             output.flush();
 
-            xml = new String(output.toByteArray());
+            this.xml = new String(output.toByteArray());
             Log.e("xml: ", xml);
             reader = new BufferedReader(new StringReader(xml));
             String line;
@@ -100,27 +81,50 @@ public class downloadInfo extends AsyncTask<Void, String, Boolean> {
                    String[] stats = line.split("\t");
                     if (stats.length!=11)continue;
                     Info i = new Info();
-                    i.setSet_num(stats[0]);
+                    i.setPart_id(stats[0]);
+                    i.setQty(stats[1]);
+                    i.setLdraw_color_id(stats[2]);
+                    i.setType(stats[3]);
+                    i.setPart_name(stats[4]);
+                    i.setColor_name(stats[5]);
+                    i.setPart_img_url(stats[6]);
+                    i.setElement_id(stats[7]);
+                    i.setElement_img_url(stats[8]);
+                    i.setRb_color_id(stats[9]);
+                    i.setPart_type_id(stats[10]);
+                    this.listaInfo.add(i);
                     // clase de arraylists
                     //clase base
                 }
 
             }
-            Log.e("xml2: ",xml);
 
         } catch (Exception e) {
             Log.e("Error: ", e.getMessage());
-            return false;
         }
 
-        return true;
+        return xml;
     }
     protected void onProgressUpdate(String... progress) {
         pDialog.setProgress(Integer.parseInt(progress[0]));
     }
 
-    @Override public void onPostExecute(Boolean result) {
+    @Override public void onPostExecute(String result) {
         pDialog.dismiss();
-        if (listener != null) listener.onInfoLoaded(result);
+        if (listener != null) listener.onInfoLoaded(true);
+    }
+    public String getXml() {
+        return xml;
+    }
+
+    public List<Info> getListaInfo() {
+        return listaInfo;
+    }
+
+    @Override
+    public String toString() {
+        return "downloadInfo{" +
+                "xml='" + xml + '\'' +
+                '}';
     }
 }

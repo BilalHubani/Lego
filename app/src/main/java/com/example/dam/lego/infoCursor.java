@@ -12,13 +12,13 @@ public class infoCursor extends MatrixCursor {
     public infoCursor(Info info) {
         super(COLNAMES);
         int n =0;
-        for (Info.Information c : info.getInfo()) {
+        /*for (Info.Information c : info.getInfo()) {
             String[] row = new String[4];
             row[0] = String.valueOf(++n);
             row[1] = c.set_num;
             row[2] = c.name;
             row[3] = String.valueOf(c.num_parts);
             this.addRow(row);
-        }
+        }*/
     }
 }

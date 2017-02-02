@@ -5,6 +5,9 @@ import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.SimpleCursorAdapter;
@@ -19,13 +22,14 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 Info info;
-
+    downloadInfo di;
+    List<Info> listaInfos;
     Spinner spinner;
     public class Product extends HashMap<String, Object> {
-        public Product(String name, String set_nums, String num_parts) {
-            this.put("name", name);
-            this.put("count", set_nums);
-            this.put("description", num_parts);
+        public Product(String part_name, String qty, String part_img_url) {
+            this.put("part_name", part_name);
+            this.put("qty", qty);
+            this.put("part_img_url", part_img_url);
         }
     }
 
@@ -35,17 +39,25 @@ Info info;
         setContentView(R.layout.activity_main);
         spinner = (Spinner)findViewById(R.id.spinner);
         init();
-        downloadInfo();
+        ImageButton search = (ImageButton)findViewById(R.id.searchButton);
+        final EditText text = (EditText)findViewById(R.id.searchText);
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                downloadInfo(text.getText().toString());
+            }
+        });
     }
     public void init() {
         info = new Info();
     }
 
-    public void downloadInfo() {
-        downloadInfo di = new downloadInfo(this);
+    public void downloadInfo(String set) {
+        di = new downloadInfo(this, set);
         di.setOnInfoLoadedListener(new OnInfoLoadedListener() {
             @Override
             public void onInfoLoaded(boolean ok) {
+                listaInfos = di.getListaInfo();
                 updateSpinners();
                 updateList();
             }
@@ -66,16 +78,20 @@ Info info;
         spinner.setAdapter(adapter);
     }
     public void updateList(){
-        ListView llista4 = (ListView) findViewById(R.id.listView);
+        ListView list = (ListView) findViewById(R.id.listView);
         List<Product> dades = new ArrayList<>();
+        for (Info i: listaInfos ) {
+            Product p = new Product(i.getPart_name(),i.getQty(),i.getPart_img_url());
+            dades.add(p);
+        }
         SimpleAdapter adapter = new SimpleAdapter(
                 MainActivity.this,
                 dades,
                 R.layout.listview,
-                new String[] { "name", "count", "image" },
+                new String[] { "part_name", "qty", "part_img_url" },
                 new int[] { R.id.name, R.id.count, R.id.image }
         );
 
-        llista4.setAdapter(adapter);
+        list.setAdapter(adapter);
     }
 }
