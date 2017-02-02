@@ -17,6 +17,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
@@ -62,62 +63,12 @@ public class downloadInfo extends AsyncTask<Void, String, Boolean> {
         return xml;
     }
 
-    public void parseXMLAndStoreIt(XmlPullParser myParser) {
-        int event;
-        String text = null;
-        String a = null, b = null, c = null, d = null;
-        Info info = new Info();
-        try {
-            event = myParser.getEventType();
-            while (event != XmlPullParser.END_DOCUMENT) {
-                String name = myParser.getName();
-                switch (event) {
-                    case XmlPullParser.START_TAG:
-                        break;
-                    case XmlPullParser.TEXT:
-                        text = myParser.getText();
-                        break;
 
-                    case XmlPullParser.END_TAG:
-                        if (name.equals("theme")) {
-                            a = text;
-                            info.setTheme_id(a);
-                        } else if (name.equals("img_tn")) {
-                            b = text;
-                            info.setSet_img_url(b);
-                        } else if (name.equals("set_id")) {
-                            c = text;
-                            info.setSet_num(c);
-                        } else if (name.equals("pieces")) {
-                            d = text;
-                            info.setNum_parts(Integer.parseInt(d));
-                        } else {
-                        }
-                        break;
-                }
-                event = myParser.next();
-            }
-            parsingComplete = false;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        ListView llista4 = (ListView) findViewById(R.id.listView);
-        List<MainActivity.Product> dades = new ArrayList<>();
-        SimpleAdapter adapter = new SimpleAdapter(
-                MainActivity.this,
-                dades,
-                R.layout.listview,
-                new String[] { "name", "count", "image" },
-                new int[] { R.id.name, R.id.count, R.id.image }
-        );
-
-        llista4.setAdapter(adapter);
-    }
     @Override protected Boolean doInBackground(Void... params) {
         int count;
         BufferedReader reader = null;
         try {
-            URL url = new URL("https://rebrickable.com/api/get_set?&key=62fb8715af2c04f5d9a3d69bdde21e65&set=60115-1&format=xml");
+            URL url = new URL("http://stucom.flx.cat/lego/get_set_parts.php?set=60115-1&key=62fb8715af2c04f5d9a3d69bdde21e65");
             URLConnection connection = url.openConnection();
             connection.connect();
             int lengthOfFile = connection.getContentLength();
@@ -128,7 +79,7 @@ public class downloadInfo extends AsyncTask<Void, String, Boolean> {
             myparser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             myparser.setInput(input, null);
             Log.d("Tag Name", "Before cal");
-            parseXMLAndStoreIt(myparser);
+
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             byte data[] = new byte[1024];
             long total = 0;
@@ -138,8 +89,26 @@ public class downloadInfo extends AsyncTask<Void, String, Boolean> {
             }
             input.close();
             output.flush();
+
             xml = new String(output.toByteArray());
             Log.e("xml: ", xml);
+            reader = new BufferedReader(new StringReader(xml));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\n"); // \t
+                for (String s: parts) {
+                    line.split("\t");
+                }
+              /*  if (parts.length != 2) continue;
+                Info c = new Info();
+                c.currency = parts[0];
+                c.rate = Double.parseDouble(parts[1]);
+                int resId = context.getResources().getIdentifier(
+                        c.currency, "string", context.getPackageName());
+                c.name = context.getResources().getString(resId);
+                currencies.add(c);*/
+            }
+            Log.e("xml2: ",xml);
 
         } catch (Exception e) {
             Log.e("Error: ", e.getMessage());
