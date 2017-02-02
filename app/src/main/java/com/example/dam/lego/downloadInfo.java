@@ -95,18 +95,16 @@ public class downloadInfo extends AsyncTask<Void, String, Boolean> {
             reader = new BufferedReader(new StringReader(xml));
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split("\n"); // \t
+                String[] parts = line.split("\n");
                 for (String s: parts) {
-                    line.split("\t");
+                   String[] stats = line.split("\t");
+                    if (stats.length!=11)continue;
+                    Info i = new Info();
+                    i.setSet_num(stats[0]);
+                    // clase de arraylists
+                    //clase base
                 }
-              /*  if (parts.length != 2) continue;
-                Info c = new Info();
-                c.currency = parts[0];
-                c.rate = Double.parseDouble(parts[1]);
-                int resId = context.getResources().getIdentifier(
-                        c.currency, "string", context.getPackageName());
-                c.name = context.getResources().getString(resId);
-                currencies.add(c);*/
+
             }
             Log.e("xml2: ",xml);
 
