@@ -30,18 +30,37 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true" />
 
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:id="@+id/listView"
+        android:layout_below="@+id/spinner" />
+
+    <ImageButton
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:srcCompat="@android:drawable/ic_search_category_default"
+        android:id="@+id/searchButton2"
+        android:layout_below="@+id/searchButton"
+        android:layout_alignParentEnd="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:inputType="text"
+        android:ems="10"
+        android:id="@+id/searchText2"
+        android:layout_below="@+id/searchText"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/searchButton"
+        android:hint="Busqueda general" />
+
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/spinner"
-        android:layout_below="@+id/searchText"
+        android:layout_below="@+id/searchButton2"
         android:layout_alignParentStart="true" />
-
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/spinner"
-        android:layout_alignParentStart="true"
-        android:id="@+id/listView" />
 
 </RelativeLayout>

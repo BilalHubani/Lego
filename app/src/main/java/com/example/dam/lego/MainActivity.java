@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -22,9 +23,12 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 Info info;
+    InfoSearch infoSearch;
     downloadInfo di;
+    downloadInfo ds;
     List<Info> listaInfos;
     Spinner spinner;
+    List<InfoSearch>listaInfoSearch;
     public class Product extends HashMap<String, Object> {
         public Product(String part_name, String qty, String part_img_url) {
             this.put("part_name", part_name);
@@ -47,18 +51,47 @@ Info info;
                 downloadInfo(text.getText().toString());
             }
         });
+        ImageButton buscar = (ImageButton)findViewById(R.id.searchButton2);
+        final EditText texto = (EditText)findViewById(R.id.searchText2);
+        buscar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                downloadSearch(texto.getText().toString());
+            }
+        });
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
     public void init() {
         info = new Info();
+        infoSearch = new InfoSearch();
     }
-
+    public void downloadSearch(String search){
+        ds = new downloadInfo(this, search, true);
+        Log.e("entra en ds", "si");
+        ds.setOnInfoLoadedListener(new OnInfoLoadedListener() {
+            @Override
+            public void onInfoLoaded(boolean ok) {
+                listaInfoSearch = ds.getListaInfoSearch();
+                updateSpinners();
+            }
+        });
+    }
     public void downloadInfo(String set) {
-        di = new downloadInfo(this, set);
+        di = new downloadInfo(this, set, false);
         di.setOnInfoLoadedListener(new OnInfoLoadedListener() {
             @Override
             public void onInfoLoaded(boolean ok) {
                 listaInfos = di.getListaInfo();
-                updateSpinners();
                 updateList();
             }
         });
@@ -66,13 +99,13 @@ Info info;
     }
 
     public void updateSpinners() {
-        infoCursor cursor = new infoCursor(info);
+        infoCursor cursor = new infoCursor(listaInfoSearch);
         SimpleCursorAdapter adapter;
         adapter = new SimpleCursorAdapter(
                 this,
                 R.layout.spinner_item,
                 cursor,
-                new String[]{"name", "set_num"},
+                new String[]{"descr", "set_id"},
                 new int[]{R.id.textView, R.id.textView2},
                 0);
         spinner.setAdapter(adapter);
