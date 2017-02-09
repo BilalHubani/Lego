@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
 Info info;
     InfoSearch infoSearch;
     downloadInfo di;
-    downloadInfo ds;
+    downloadSearch ds;
     List<Info> listaInfos;
     Spinner spinner;
     List<InfoSearch>listaInfoSearch;
@@ -76,18 +76,20 @@ Info info;
         infoSearch = new InfoSearch();
     }
     public void downloadSearch(String search){
-        ds = new downloadInfo(this, search, true);
+        ds = new downloadSearch(this, search);
         Log.e("entra en ds", "si");
         ds.setOnInfoLoadedListener(new OnInfoLoadedListener() {
             @Override
             public void onInfoLoaded(boolean ok) {
-                listaInfoSearch = ds.getListaInfoSearch();
+                listaInfoSearch = ds.getListaInfo();
+                Log.e("lista pintada", listaInfoSearch.toString());
                 updateSpinners();
             }
         });
+        ds.execute();
     }
     public void downloadInfo(String set) {
-        di = new downloadInfo(this, set, false);
+        di = new downloadInfo(this, set);
         di.setOnInfoLoadedListener(new OnInfoLoadedListener() {
             @Override
             public void onInfoLoaded(boolean ok) {

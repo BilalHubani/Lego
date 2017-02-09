@@ -71,30 +71,34 @@ public class downloadSearch extends AsyncTask<Void, String, Boolean> {
             Log.e("xml: ", xml);
             reader = new BufferedReader(new StringReader(xml));
             String line;
+            boolean firstLine = true;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split("\n");
                 for (String s: parts) {
                     String[] stats = line.split("\t");
-                    if (stats.length!=11)continue;
-                    InfoSearch i = new InfoSearch();
-                    i.setSet_id(stats[0]);
-                    i.setYear(stats[1]);
-                    i.setPieces(stats[2]);
-                    i.setTheme1(stats[3]);
-                    i.setTheme2(stats[4]);
-                    i.setTheme3(stats[5]);
-                    i.setAccessory(stats[6]);
-                    i.setKit(stats[7]);
-                    i.setDescr(stats[8]);
-                    i.setUrl(stats[9]);
-                    i.setImg_tn(stats[10]);
-                    i.setImg_sm(stats[11]);
-                    i.setImg_big(stats[12]);
-                    this.listaInfoSearch.add(i);
-                    // clase de arraylists
-                    //clase base
+                    if (stats.length != 13) continue;
+                    if (firstLine == true) firstLine = false;
+                    else {
+                        InfoSearch i = new InfoSearch();
+                        i.setSet_id(stats[0]);
+                        i.setYear(stats[1]);
+                        i.setPieces(stats[2]);
+                        i.setTheme1(stats[3]);
+                        i.setTheme2(stats[4]);
+                        i.setTheme3(stats[5]);
+                        i.setAccessory(stats[6]);
+                        i.setKit(stats[7]);
+                        i.setDescr(stats[8]);
+                        i.setUrl(stats[9]);
+                        i.setImg_tn(stats[10]);
+                        i.setImg_sm(stats[11]);
+                        i.setImg_big(stats[12]);
+                        this.listaInfoSearch.add(i);
+                        Log.e("lista background", listaInfoSearch.toString());
+                        // clase de arraylists
+                        //clase base
+                    }
                 }
-
             }
 
         } catch (Exception e) {
