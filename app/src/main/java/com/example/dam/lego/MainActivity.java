@@ -1,19 +1,37 @@
 package com.example.dam.lego;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Rect;
+import android.media.Image;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,11 +47,40 @@ Info info;
     List<Info> listaInfos;
     Spinner spinner;
     List<InfoSearch>listaInfoSearch;
-    public class Product extends HashMap<String, Object> {
-        public Product(String part_name, String qty, String part_img_url) {
-            this.put("part_name", part_name);
-            this.put("qty", qty);
-            this.put("part_img_url", part_img_url);
+    ImageView img;
+    public class Product {
+        private String part_name;
+        private String qty;
+        private String image;
+
+        public Product(String part_name, String qty, String image) {
+            this.part_name = part_name;
+            this.qty = qty;
+            this.image = image;
+        }
+
+        public String getPart_name() {
+            return part_name;
+        }
+
+        public void setPart_name(String part_name) {
+            this.part_name = part_name;
+        }
+
+        public String getQty() {
+            return qty;
+        }
+
+        public void setQty(String qty) {
+            this.qty = qty;
+        }
+
+        public String getImage() {
+            return image;
+        }
+
+        public void setImage(String image) {
+            this.image = image;
         }
     }
 
@@ -115,21 +162,71 @@ Info info;
         spinner.setAdapter(adapter);
     }
     public void updateList(){
+        img = (ImageView)findViewById(R.id.image);
+
         ListView list = (ListView) findViewById(R.id.listView);
         List<Product> dades = new ArrayList<>();
         for (Info i: listaInfos ) {
-            Product p = new Product(i.getPart_name(),i.getQty(),i.getPart_img_url());
-            dades.add(p);
+                Product p = new Product(i.getPart_name(),i.getQty(), i.getPart_img_url());
+                dades.add(p);
         }
-        SimpleAdapter adapter = new SimpleAdapter(
-                MainActivity.this,
-                dades,
-                R.layout.listview,
-                new String[] { "part_name", "qty", "part_img_url" },
-                new int[] { R.id.name, R.id.count, R.id.image }
-        );
-
+       // SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, dades, R.layout.listview, new String[] { "part_name", "qty", "part_img_url" }, new int[] { R.id.name, R.id.count, R.id.image });
+        CatalogAdapter adapter = new CatalogAdapter(this, dades);
         list.setAdapter(adapter);
     }
+    public class CatalogAdapter extends BaseAdapter {
+
+        private Context context;
+        private List<Product> catalog;
+
+        public CatalogAdapter(Context context, List<Product> catalog) {
+            this.context = context;
+            this.catalog = catalog;
+        }
+
+    @Override public int getCount() { return catalog.size(); }
+    @Override public Object getItem(int position) { return catalog.get(position); }
+
+        @Override
+        public long getItemId(int i) {
+            return 0;
+        }
+
+        public class ViewHolder {
+        public TextView part_name;
+        public TextView qty;
+        public ImageView imImage;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        // RECICLAT DE VISTES
+        View myView = convertView;
+        if (myView == null) {
+            LayoutInflater inflater =
+                    (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            myView = inflater.inflate(R.layout.listview, parent, false);
+            ViewHolder holder = new ViewHolder();
+            holder.part_name = (TextView) myView.findViewById(R.id.name);
+            holder.qty = (TextView) myView.findViewById(R.id.count);
+            holder.imImage = (ImageView) myView.findViewById(R.id.image);
+            myView.setTag(holder);
+        }
+        ViewHolder holder = (ViewHolder) myView.getTag();
+
+        Product product = catalog.get(position);
+        String nom = product.getPart_name();
+        holder.part_name.setText(nom);
+        String price = product.getQty();
+        holder.qty.setText(price);
+        Picasso.with(this.context).load(product.getImage()).into(holder.imImage, new Callback() {
+            @Override
+            public void onSuccess() {}
+            @Override
+            public void onError() {}
+        });
+        return myView;
+    }
+}
 
 }

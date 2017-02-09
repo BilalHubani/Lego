@@ -1,5 +1,7 @@
 package com.example.dam.lego;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by dam on 2/2/17.
  */
@@ -16,8 +18,17 @@ public class Info {
     private String element_img_url;
     private String rb_color_id;
     private String part_type_id;
+    private Bitmap img;
 
     public Info() {
+    }
+
+    public Bitmap getImg() {
+        return img;
+    }
+
+    public void setImg(Bitmap img) {
+        this.img = img;
     }
 
     public String getPart_id() {

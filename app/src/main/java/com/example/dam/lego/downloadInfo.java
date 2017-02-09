@@ -2,14 +2,19 @@ package com.example.dam.lego;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ImageView;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -20,6 +25,7 @@ import java.util.List;
  */
 
 public class downloadInfo extends AsyncTask<Void, String, String> {
+    ImageView imageView;
     private Context context;
     public downloadInfo(Context context, String set){
         this.context = context;
@@ -32,9 +38,7 @@ public class downloadInfo extends AsyncTask<Void, String, String> {
     private ProgressDialog pDialog;
     private String xml;
     private String set;
-    private boolean b;
     private List<Info> listaInfo = new ArrayList<>();
-    private List<InfoSearch> listaInfoSearch = new ArrayList<>();
     @Override protected void onPreExecute() {
         pDialog = new ProgressDialog(context);
         Log.e("entra en prexecute", "si");
@@ -53,7 +57,11 @@ public class downloadInfo extends AsyncTask<Void, String, String> {
     @Override protected String doInBackground(Void... params) {
         int count;
         BufferedReader reader = null;
+        URL imageUrl = null;
+        HttpURLConnection conn = null;
+
         try {
+
                 URL url = new URL("http://stucom.flx.cat/lego/get_set_parts.php?set=" + set + "&key=62fb8715af2c04f5d9a3d69bdde21e65");
                 URLConnection connection = url.openConnection();
                 connection.connect();
@@ -108,6 +116,11 @@ public class downloadInfo extends AsyncTask<Void, String, String> {
         return xml;
     }
 
+    @Override
+    protected void onProgressUpdate(String... values) {
+
+    }
+
     @Override public void onPostExecute(String result) {
         pDialog.dismiss();
         if (listener != null) listener.onInfoLoaded(true);
@@ -118,9 +131,6 @@ public class downloadInfo extends AsyncTask<Void, String, String> {
 
     public List<Info> getListaInfo() {
         return listaInfo;
-    }
-    public List<InfoSearch> getListaInfoSearch(){
-        return listaInfoSearch;
     }
 
     @Override
