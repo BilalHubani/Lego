@@ -170,7 +170,6 @@ Info info;
                 Product p = new Product(i.getPart_name(),i.getQty(), i.getPart_img_url());
                 dades.add(p);
         }
-       // SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, dades, R.layout.listview, new String[] { "part_name", "qty", "part_img_url" }, new int[] { R.id.name, R.id.count, R.id.image });
         CatalogAdapter adapter = new CatalogAdapter(this, dades);
         list.setAdapter(adapter);
     }
