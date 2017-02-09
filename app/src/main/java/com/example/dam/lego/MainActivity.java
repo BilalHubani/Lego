@@ -62,7 +62,8 @@ Info info;
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
+                String codigoCaja = listaInfoSearch.get(i).getSet_id();
+                downloadInfo(codigoCaja);
             }
 
             @Override
@@ -70,6 +71,7 @@ Info info;
 
             }
         });
+
     }
     public void init() {
         info = new Info();
@@ -129,4 +131,5 @@ Info info;
 
         list.setAdapter(adapter);
     }
+
 }
