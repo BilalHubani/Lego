@@ -3,6 +3,7 @@ package com.example.dam.lego;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -48,10 +49,12 @@ Info info;
     Spinner spinner;
     List<InfoSearch>listaInfoSearch;
     ImageView img;
+    ListView list;
     public class Product {
         private String part_name;
         private String qty;
         private String image;
+
 
         public Product(String part_name, String qty, String image) {
             this.part_name = part_name;
@@ -89,6 +92,7 @@ Info info;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         spinner = (Spinner)findViewById(R.id.spinner);
+        list = (ListView) findViewById(R.id.listView);
         init();
         ImageButton search = (ImageButton)findViewById(R.id.searchButton);
         final EditText text = (EditText)findViewById(R.id.searchText);
@@ -116,6 +120,27 @@ Info info;
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
+            }
+        });
+       /* list.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(MainActivity.this, PartActivity.class);
+                intent.putExtra("part_id", listaInfos.get(i).getPart_id());
+                startActivity(intent);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });*/
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(MainActivity.this, PartActivity.class);
+                intent.putExtra("part_id", listaInfos.get(i).getPart_id());
+                startActivity(intent);
             }
         });
 
@@ -163,8 +188,6 @@ Info info;
     }
     public void updateList(){
         img = (ImageView)findViewById(R.id.image);
-
-        ListView list = (ListView) findViewById(R.id.listView);
         List<Product> dades = new ArrayList<>();
         for (Info i: listaInfos ) {
                 Product p = new Product(i.getPart_name(),i.getQty(), i.getPart_img_url());

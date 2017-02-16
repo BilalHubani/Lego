@@ -2,9 +2,6 @@ package com.example.dam.lego;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
@@ -25,7 +22,6 @@ import java.util.List;
  */
 
 public class downloadInfo extends AsyncTask<Void, String, String> {
-    ImageView imageView;
     private Context context;
     public downloadInfo(Context context, String set){
         this.context = context;
@@ -57,8 +53,6 @@ public class downloadInfo extends AsyncTask<Void, String, String> {
     @Override protected String doInBackground(Void... params) {
         int count;
         BufferedReader reader = null;
-        URL imageUrl = null;
-        HttpURLConnection conn = null;
 
         try {
 
